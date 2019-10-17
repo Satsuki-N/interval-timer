@@ -143,7 +143,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
                             width:hStr.bounds.width, height:hStr.bounds.height)
         pickerView.addSubview(hStr)
         
-        self.view.addSubview(pickerView)
+        self.view.addSubview(pickerView)   
         
         //「分」をラベルに追加
         let mStr = UILabel()
