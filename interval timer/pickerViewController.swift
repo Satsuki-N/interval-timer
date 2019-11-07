@@ -24,7 +24,7 @@ class pickerViewController: UIViewController {
         datePicker.locale = Locale(identifier: "ja_JP")
         datePicker.datePickerMode = UIDatePicker.Mode.time
         datePicker.timeZone = NSTimeZone.local
-        //datePicker.locale = Locale.current
+        datePicker.locale = Locale.current
         dateField.inputView = datePicker
         
 //        datePicker2.locale = Locale(identifier: "ja_JP")

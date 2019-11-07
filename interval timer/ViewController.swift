@@ -9,11 +9,14 @@
 import UIKit
 
 class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource  {
-    @IBOutlet weak var pickerView: UIPickerView!
-    @IBOutlet weak var pickerView2: UIPickerView!
+    var pickerView: UIPickerView = UIPickerView()
+    var pickerView2: UIPickerView = UIPickerView()
+//     var pickerView: UIPickerView!
+//     var pickerView2: UIPickerView!
     
-    @IBOutlet weak var dateField: UITextField!
-    @IBOutlet weak var dateField2: UITextField!
+    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var textField2: UITextField!
+    
     
     var datePicker: UIDatePicker = UIDatePicker()
     var timer: Timer = Timer()
@@ -30,6 +33,8 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     
     var isRepeat = false
     
+    
+    
     //時分秒のデータ
     let datalist = [[Int](0...23),[Int](0...59),[Int](0...59)]
     
@@ -43,6 +48,15 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         pickerView2.delegate = self
         pickerView2.dataSource = self
         setPickerView2UnitLabel()
+        
+        
+        let toolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
+        let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(ViewController.done))
+        let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ViewController.cancel))
+        toolbar.setItems([cancelItem, doneItem], animated: true)
+        
+        self.textField.inputView = pickerView
+        self.textField.inputAccessoryView = toolbar
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -53,12 +67,38 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         return datalist.count
     }
     
+    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        return pickerView.bounds.width * 1/4
+    }
+    
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView
     {
         let pickerLabel = UILabel()
         pickerLabel.textAlignment = NSTextAlignment.left
         pickerLabel.text = String(datalist[component][row])
-        pickerLabel.backgroundColor = UIColor.red
+        //pickerLabel.backgroundColor = UIColor.red
+        return pickerLabel
+        
+    }
+    
+    func pickerView2(_ pickerView2: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return datalist[component].count
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return datalist.count
+    }
+    
+    func pickerView2(_ pickerView2: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        return pickerView2.bounds.width * 1/4
+    }
+    
+    func pickerView2(_ pickerView2: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView
+    {
+        let pickerLabel = UILabel()
+        pickerLabel.textAlignment = NSTextAlignment.left
+        pickerLabel.text = String(datalist[component][row])
+        //pickerLabel.backgroundColor = UIColor.red
         return pickerLabel
         
     }
@@ -142,28 +182,28 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
                             y:pickerView.bounds.height/2 - (hStr.bounds.height/2),
                             width:hStr.bounds.width, height:hStr.bounds.height)
         pickerView.addSubview(hStr)
-        
-        self.view.addSubview(pickerView)   
-        
+
+        //self.view.addSubview(pickerView)
+
         //「分」をラベルに追加
         let mStr = UILabel()
         mStr.text = "分"
         mStr.sizeToFit()
-        mStr.frame = CGRect(x:pickerView.bounds.width/2 - mStr.bounds.width/2,
+        mStr.frame = CGRect(x:pickerView.bounds.width/1.9 - mStr.bounds.width/2,
                             y:pickerView.bounds.height/2 - (mStr.bounds.height/2),
                             width:mStr.bounds.width, height:mStr.bounds.height)
         pickerView.addSubview(mStr)
-        self.view.addSubview(pickerView)
-        
+        //self.view.addSubview(pickerView)
+
         //「秒」をラベルに追加
         let sStr = UILabel()
         sStr.text = "秒"
         sStr.sizeToFit()
-        sStr.frame = CGRect(x:pickerView.bounds.width*8/10 - sStr.bounds.width/2,
+        sStr.frame = CGRect(x:pickerView.bounds.width*17/20 - sStr.bounds.width/2,
                             y:pickerView.bounds.height/2 - (sStr.bounds.height/2),
                             width:sStr.bounds.width, height:sStr.bounds.height)
         pickerView.addSubview(sStr)
-        self.view.addSubview(pickerView)
+        //self.view.addSubview(pickerView)
     }
     
     private func setPickerView2UnitLabel() {
@@ -175,9 +215,9 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
                             y:pickerView2.bounds.height/2 - (hStr.bounds.height/2),
                             width:hStr.bounds.width, height:hStr.bounds.height)
         pickerView2.addSubview(hStr)
-        
-        self.view.addSubview(pickerView2)
-        
+
+        //self.view.addSubview(pickerView2)
+
         //「分」をラベルに追加
         let mStr = UILabel()
         mStr.text = "分"
@@ -186,8 +226,8 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
                             y:pickerView2.bounds.height/2 - (mStr.bounds.height/2),
                             width:mStr.bounds.width, height:mStr.bounds.height)
         pickerView2.addSubview(mStr)
-        self.view.addSubview(pickerView2)
-        
+        //self.view.addSubview(pickerView2)
+
         //「秒」をラベルに追加
         let sStr = UILabel()
         sStr.text = "秒"
@@ -196,6 +236,22 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
                             y:pickerView2.bounds.height/2 - (sStr.bounds.height/2),
                             width:sStr.bounds.width, height:sStr.bounds.height)
         pickerView2.addSubview(sStr)
-        self.view.addSubview(pickerView2)
+        //self.view.addSubview(pickerView2)
     }
+    
+    @objc func cancel() {
+        self.textField.text = ""
+        self.textField.endEditing(true)
+    }
+    
+    @objc func done() {
+        self.textField.endEditing(true)
+        self.textField.text = String(datalist[0][pickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[0][pickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[0][pickerView.selectedRow(inComponent: 2)]) + "秒"
+        
+    }
+    
+    func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
+        return CGRect(x: x, y: y, width: width, height: height)
+    }
+    
 }
