@@ -97,28 +97,6 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         
     }
     
-    //    func pickerView2(_ pickerView2: UIPickerView2, numberOfRowsInComponent component: Int) -> Int {
-    //        return datalist[component].count
-    //    }
-    //
-    //    func numberOfComponents(in pickerView2: UIPickerView2) -> Int {
-    //        return datalist.count
-    //    }
-    //
-    //    func pickerView2(_ pickerView2: UIPickerView2, widthForComponent component: Int) -> CGFloat {
-    //        return pickerView2.bounds.width * 1/4
-    //    }
-    //
-    //    func pickerView2(_ pickerView2: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView
-    //    {
-    //        let pickerLabel = UILabel()
-    //        pickerLabel.textAlignment = NSTextAlignment.left
-    //        pickerLabel.text = String(datalist[component][row])
-    //        //pickerLabel.backgroundColor = UIColor.red
-    //        return pickerLabel
-    //
-    //    }
-    
     //ボタン押下時の呼び出しメソッド
     @IBAction func startButtonPressed() {
         timer.invalidate()
@@ -162,8 +140,10 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     
     @IBAction func reset() {
         Label.text = String("0")
+        Label2.text = String("0")
         pauseTime = 0
         data = 0
+        
     }
     
     @IBAction func repeatSwitchtoggled(_ sender: Any) {
@@ -208,7 +188,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
                hours2 = count2/3600
                minutes2 = (count2 - hours2*3600)/60
                seconds2 = count2 - hours2*3600 - minutes2*60
-               Label.text = "残り\(hours)時間\(minutes)分\(seconds)秒です。"
+               Label2.text = "残り\(hours2)時間\(minutes2)分\(seconds2)秒です。"
                
         if count2 == 0 {
             Label2.text = "カウントダウン終了"
