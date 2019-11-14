@@ -23,6 +23,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     var count: Int = 0
     var count2: Int = 0
     var data: Int = 0
+    var data2: Int = 0
     var hours: Int = 0
     var minutes: Int = 0
     var seconds: Int = 0
@@ -115,7 +116,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
             count2 = timehour2 * 60 * 60
                 +  timeminute2 * 60
                 +  timesecond2
-            data = count2
+            data2 = count2
         } else {
             count2 = Int(pauseTime)
             
@@ -143,6 +144,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         Label2.text = String("0")
         pauseTime = 0
         data = 0
+        data2 = 0
         
     }
     
@@ -180,10 +182,10 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         }
         
         if count2 > 0 {
-                   count2 -= 1
-               } else {
-                   count2 -= 0
-               }
+            count2 -= 1
+        } else {
+            count2 -= 0
+        }
                
                hours2 = count2/3600
                minutes2 = (count2 - hours2*3600)/60
@@ -195,7 +197,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
             
             
             if isRepeat {
-                count2 = data
+                count2 = data2
                 
             } else {
                 timer.invalidate()
