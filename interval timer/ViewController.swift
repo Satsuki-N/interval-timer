@@ -21,12 +21,12 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     var timer: Timer = Timer()
     
     var count: Int = 0
-    var count2: Int = 0
     var data: Int = 0
-    var data2: Int = 0
     var hours: Int = 0
     var minutes: Int = 0
     var seconds: Int = 0
+    var count2: Int = 0
+    var data2: Int = 0
     var hours2: Int = 0
     var minutes2: Int = 0
     var seconds2: Int = 0
@@ -34,6 +34,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     var stopBtn:UIButton!
     var startBtn:UIButton!
     var pauseTime:Float = 0
+    var pauseTime2:Float = 0
     var timehour : Int = 0
     var timeminute : Int = 0
     var timesecond : Int = 0
@@ -53,11 +54,6 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         pickerView.delegate = self
         pickerView.dataSource = self
         setPickerViewUnitLabel()
-        
-        //        pickerView2.delegate = self
-        //        pickerView2.dataSource = self
-        //        setPickerView2UnitLabel()
-        //
         
         let toolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
         let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(ViewController.done))
@@ -112,13 +108,13 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
             
         }
         
-        if pauseTime == 0 {
+        if pauseTime2 == 0 {
             count2 = timehour2 * 60 * 60
                 +  timeminute2 * 60
                 +  timesecond2
             data2 = count2
         } else {
-            count2 = Int(pauseTime)
+            count2 = Int(pauseTime2)
             
         }
         
@@ -136,6 +132,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     
     @IBAction func stop() {
         pauseTime = Float(count)
+        pauseTime2 = Float(count)
         timer.invalidate()
     }
     
@@ -143,6 +140,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         Label.text = String("0")
         Label2.text = String("0")
         pauseTime = 0
+        pauseTime2 = 0
         data = 0
         data2 = 0
         
@@ -164,7 +162,6 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         hours = count/3600
         minutes = (count - hours*3600)/60
         seconds = count - hours*3600 - minutes*60
-        print("hoge")
         Label.text = "残り\(hours)時間\(minutes)分\(seconds)秒です。"
         
         //カウントダウン状況をラベルに表示
