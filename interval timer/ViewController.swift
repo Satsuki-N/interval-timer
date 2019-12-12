@@ -9,50 +9,46 @@
 import UIKit
 
 class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource  {
-    var pickerView: UIPickerView = UIPickerView()
-    var pickerView2: UIPickerView = UIPickerView()
     
-    @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var textField2: UITextField!
-    @IBOutlet weak var Label: UILabel!
-    @IBOutlet weak var Label2: UILabel!
+    let datalist = [[Int](0...23),[Int](0...59),[Int](0...59)] //時分秒のデータ
     
-    var datePicker: UIDatePicker = UIDatePicker()
+    @IBOutlet weak var mainTimertextField: UITextField!
+    @IBOutlet weak var intervalTimertextField: UITextField!
+    @IBOutlet weak var mainLabel: UILabel!
+    @IBOutlet weak var intervalNumberLabel: UILabel!
+    
     var timer: Timer = Timer()
     
-    var count: Int = 0
-    var data: Int = 0
-    var hours: Int = 0
-    var minutes: Int = 0
-    var seconds: Int = 0
-    var count2: Int = 0
-    var data2: Int = 0
-    var hours2: Int = 0
-    var minutes2: Int = 0
-    var seconds2: Int = 0
-    var myLabel : UILabel!
-    var stopBtn:UIButton!
-    var startBtn:UIButton!
-    var pauseTime:Float = 0
-    var pauseTime2:Float = 0
-    var timehour : Int = 0
-    var timeminute : Int = 0
-    var timesecond : Int = 0
-    var timehour2: Int = 0
-    var timeminute2: Int = 0
-    var timesecond2: Int = 0
-    var isRepeat = false
+    var inputIntervalNumber: Int = 0 //入力したインターバル回数
+    var countIntervalNumber: Int = 0 //実際にインターバルした回数
     
+    var inputMainTimerHour: Int = 0 //入力したメインタイマー　（時間）
+    var inputMainTimerMinute: Int = 0 //入力したメインタイマー　（分）
+    var inputMainTimerSecond: Int = 0 //入力したメインタイマー　（秒）
+    var mainCount: Int = 0 //メインタイマーの合計秒数
+    var remainingMainTimeHour: Int = 0 //メインタイマー残り時間　（時間）
+    var remainingMainTimeMinute: Int = 0 //メインタイマー残り時間　（分）
+    var remainingMainTimeSecond: Int = 0 //メインタイマー残り時間　（秒）
     
+    var inputIntervalTimerHour: Int = 0 //入力したインターバルタイマー　（時間）
+    var inputIntervalTimerMinute: Int = 0 //入力したインターバルタイマー　（分）
+    var inputIntervalTimerSecond: Int = 0 //入力したインターバルタイマー　（秒）
+    var intervalCount: Int = 0 //インターバルタイマーの合計秒数
+    var remainingIntervalTimeHour: Int = 0 //インターバルタイマーの残り時間　　（時間）
+    var remainingIntervalTimeMinute: Int = 0 //インターバルタイマーの残り時間　（分）
+    var remainingIntervalTimeSecond: Int = 0 //インターバルタイマーの残り時間　（秒）
     
-    //時分秒のデータ
-    let datalist = [[Int](0...23),[Int](0...59),[Int](0...59)]
+    var mainTimerWork : Bool = false //メインタイマーが動いているかどうか
+    var intervalTimerWork : Bool = false //インターバルタイマーが動いているかどうか
+    var timerStop  : Bool = false //タイマーが止まっているかどうか
+    
+    var timePickerView:UIPickerView = UIPickerView()
     
     override func viewDidLoad() {
         super .viewDidLoad()
         
-        pickerView.delegate = self
-        pickerView.dataSource = self
+        timePickerView.delegate = self
+        timePickerView.dataSource = self
         setPickerViewUnitLabel()
         
         let toolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
@@ -60,16 +56,19 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ViewController.cancel))
         toolbar.setItems([cancelItem, doneItem], animated: true)
         
-        self.textField.inputView = pickerView
-        self.textField.inputAccessoryView = toolbar
+        
+        self.mainTimertextField.inputView = timePickerView
+        self.mainTimertextField.inputAccessoryView = toolbar
+        
         
         let toolbar2 = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
         let doneItem2 = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(ViewController.done2))
         let cancelItem2 = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ViewController.cancel2))
         toolbar2.setItems([cancelItem2, doneItem2], animated: true)
         
-        self.textField2.inputView = pickerView
-        self.textField2.inputAccessoryView = toolbar2
+        
+        self.intervalTimertextField.inputView = timePickerView
+        self.intervalTimertextField.inputAccessoryView = toolbar2
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
@@ -89,188 +88,194 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         let pickerLabel = UILabel()
         pickerLabel.textAlignment = NSTextAlignment.left
         pickerLabel.text = String(datalist[component][row])
-        //pickerLabel.backgroundColor = UIColor.red
         return pickerLabel
         
     }
     
-    //ボタン押下時の呼び出しメソッド
-    @IBAction func startButtonPressed() {
-        timer.invalidate()
-        
-        if pauseTime == 0 {
-            count = timehour * 60 * 60
-                +  timeminute * 60
-                +  timesecond
-            data = count
-        } else {
-            count = Int(pauseTime)
-            
+    //pickerView内のラベルの位置
+     private func setPickerViewUnitLabel() {
+         //「時間」のラベルを追加
+         let hStr = UILabel()
+         hStr.text = "時間"
+         hStr.sizeToFit()
+         hStr.frame = CGRect(x:timePickerView.bounds.width/4 - hStr.bounds.width/2,
+                             y:timePickerView.bounds.height/2 - (hStr.bounds.height/2),
+                             width:hStr.bounds.width, height:hStr.bounds.height)
+         timePickerView.addSubview(hStr)
+         
+         //self.view.addSubview(pickerView)
+         
+         //「分」をラベルに追加
+         let mStr = UILabel()
+         mStr.text = "分"
+         mStr.sizeToFit()
+         mStr.frame = CGRect(x:timePickerView.bounds.width/1.9 - mStr.bounds.width/2,
+                             y:timePickerView.bounds.height/2 - (mStr.bounds.height/2),
+                             width:mStr.bounds.width, height:mStr.bounds.height)
+         timePickerView.addSubview(mStr)
+         //self.view.addSubview(pickerView)
+         
+         //「秒」をラベルに追加
+         let sStr = UILabel()
+         sStr.text = "秒"
+         sStr.sizeToFit()
+         sStr.frame = CGRect(x:timePickerView.bounds.width*17/20 - sStr.bounds.width/2,
+                             y:timePickerView.bounds.height/2 - (sStr.bounds.height/2),
+                             width:sStr.bounds.width, height:sStr.bounds.height)
+         timePickerView.addSubview(sStr)
+         //self.view.addSubview(pickerView)
+     }
+    
+      @objc func cancel() {
+            self.mainTimertextField.text = ""
+            self.mainTimertextField.endEditing(true)
         }
         
-        if pauseTime2 == 0 {
-            count2 = timehour2 * 60 * 60
-                +  timeminute2 * 60
-                +  timesecond2
-            data2 = count2
-        } else {
-            count2 = Int(pauseTime2)
-            
+        @objc func cancel2() {
+            self.intervalTimertextField.text = ""
+            self.intervalTimertextField.endEditing(true)
         }
         
-        //1秒周期でcountDownメソッドを呼び出すタイマーを開始する。
-        timer = Timer.scheduledTimer(timeInterval: 1,
-                                     target: self,
-                                     selector: #selector(countDown),
-                                     userInfo: nil,
-                                     repeats: true)
+        @objc func done() {
+            self.mainTimertextField.endEditing(true)
+            self.mainTimertextField.text = String(datalist[0][timePickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[0][timePickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[0][timePickerView.selectedRow(inComponent: 2)]) + "秒"
+            
+            inputMainTimerHour = datalist[0][timePickerView.selectedRow(inComponent: 0)]
+            inputMainTimerMinute = datalist[0][timePickerView.selectedRow(inComponent: 1)]
+            inputMainTimerSecond = datalist[0][timePickerView.selectedRow(inComponent: 2)]
+    
+        }
+        
+        @objc func done2() {
+            self.intervalTimertextField.endEditing(true)
+            self.intervalTimertextField.text = String(datalist[0][timePickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[0][timePickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[0][timePickerView.selectedRow(inComponent: 2)]) + "秒"
+            
+            inputIntervalTimerHour = datalist[0][timePickerView.selectedRow(inComponent: 0)]
+            inputIntervalTimerMinute = datalist[0][timePickerView.selectedRow(inComponent: 1)]
+            inputIntervalTimerSecond = datalist[0][timePickerView.selectedRow(inComponent: 2)]
+            
+        }
+    
+    func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
+           return CGRect(x: x, y: y, width: width, height: height)
+       }
+    
+    @IBAction func stepperDidTap(stepper: UIStepper){
+        intervalNumberLabel.text = String(stepper.value)
+        inputIntervalNumber = Int(stepper.value)
     }
     
-    let scWid: CGFloat = UIScreen.main.bounds.width     //画面の幅
-    let scHei: CGFloat = UIScreen.main.bounds.height    //画面の高さ
     
+    //ボタン押下時の呼び出しメソッド
+    @IBAction func start() {
+        
+        if mainTimerWork == false && intervalTimerWork == false {
+            mainCount = inputMainTimerHour * 60 * 60
+            + inputMainTimerMinute * 60
+            + inputMainTimerSecond
+        
+            intervalCount = inputIntervalTimerHour * 60 * 60
+            +  inputIntervalTimerMinute * 60
+            +  inputIntervalTimerSecond
+            countIntervalNumber = 0
+            //1秒周期でcountDownメソッドを呼び出すタイマーを開始する。
+            timer = Timer.scheduledTimer(timeInterval: 1,
+                                         target: self,
+                                         selector: #selector(countDown),
+                                         userInfo: nil,
+                                         repeats: true)
+        }else{
+        timerStop = false
+        }
+    }
     
     @IBAction func stop() {
-        pauseTime = Float(count)
-        pauseTime2 = Float(count)
-        timer.invalidate()
+        timerStop = true
     }
     
     @IBAction func reset() {
-        Label.text = String("0")
-        Label2.text = String("0")
-        pauseTime = 0
-        pauseTime2 = 0
-        data = 0
-        data2 = 0
-        
-    }
-    
-    @IBAction func repeatSwitchtoggled(_ sender: Any) {
-        isRepeat.toggle()
+        mainLabel.text = "リセットしました"
+        mainTimerWork = false
+        intervalTimerWork = false
+        timer.invalidate()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
+            self.mainLabel.text = "0"
+        }
     }
     
     //タイマーから呼び出されるメソッド
     @objc func countDown(){
-        //カウントを減らす。
-        if count > 0 {
-            count -= 1
-        } else {
-            count -= 0
-        }
-        
-        hours = count/3600
-        minutes = (count - hours*3600)/60
-        seconds = count - hours*3600 - minutes*60
-        Label.text = "残り\(hours)時間\(minutes)分\(seconds)秒です。"
-        
-        //カウントダウン状況をラベルに表示
-        if count == 0 {
-            Label.text = "カウントダウン終了"
-            
-            
-            if isRepeat {
-                count = data
-                
-            } else {
-                timer.invalidate()
+        switch (mainTimerWork,intervalTimerWork){
+        case (false,false):
+            mainTimerWork = true
+            mainLabel.text = "カウントを開始します"
+        case (true,false):
+            if timerStop != true{
+                mainCountDown()
+            }else if timerStop == true{
+                break
             }
-            return //returnでこのメソッドの処理を終了
+        case (false,true):
+            if timerStop != true{
+                intervalCountDown()
+            }else if timerStop == true{
+                break
+            }
+        default:
+            break
+            }
         }
         
-        if count2 > 0 {
-            count2 -= 1
-        } else {
-            count2 -= 0
-        }
-               
-               hours2 = count2/3600
-               minutes2 = (count2 - hours2*3600)/60
-               seconds2 = count2 - hours2*3600 - minutes2*60
-               Label2.text = "残り\(hours2)時間\(minutes2)分\(seconds2)秒です。"
-               
-        if count2 == 0 {
-            Label2.text = "カウントダウン終了"
+    func mainCountDown() {
+        if mainCount > 0{
+                remainingMainTimeHour = mainCount/3600
+                remainingMainTimeMinute = (mainCount - remainingMainTimeHour*3600)/60
+                remainingMainTimeSecond = mainCount - remainingMainTimeHour*3600 - remainingMainTimeHour*60
+            let mainTimeHourtext = String(format: "%02d", remainingMainTimeHour)
+            let mainTimeMinuteText = String(format: "%02d", remainingMainTimeMinute)
+            let mainTimeSecondtext = String(format: "%02d", remainingMainTimeSecond)
             
-            
-            if isRepeat {
-                count2 = data2
-                
-            } else {
-                timer.invalidate()
-            }
-            return //returnでこのメソッドの処理を終了
-        }
+            mainLabel.text = "\(mainTimeHourtext):\(mainTimeMinuteText)’\(mainTimeSecondtext)"
+                mainCount -= 1
+    }else if mainCount == 0{
+                if countIntervalNumber < inputIntervalNumber{
+                    mainLabel.text = "インターバルスタート"
+                    mainTimerWork = false
+                    intervalTimerWork = true
+               
+                    intervalCount = inputIntervalTimerHour * 60 * 60
+                    +  inputIntervalTimerMinute * 60
+                    +  inputIntervalTimerSecond
+                }else if countIntervalNumber == inputIntervalNumber{
+                    mainLabel.text = "終了です。"
+                    mainTimerWork = false
+                    intervalTimerWork = false
+                    timer.invalidate()
+                }
+    }
+    }
+    
+    func intervalCountDown() {
+          mainLabel.text = "インターバルに入ります。"
+          if intervalCount > 0{
+              remainingIntervalTimeHour = intervalCount/3600
+              remainingIntervalTimeMinute = (intervalCount - remainingIntervalTimeHour*3600)/60
+              remainingIntervalTimeSecond = intervalCount - remainingIntervalTimeHour*3600 - remainingIntervalTimeHour*60
+            let intervalTimeHourtext = String(format: "%02d", remainingIntervalTimeHour)
+            let intervalTimeMinutetext = String(format: "%02d", remainingIntervalTimeMinute)
+            let intervalTimeSecondtext = String(format: "%02d", remainingIntervalTimeSecond)
+            mainLabel.text = "\(intervalTimeHourtext):\(intervalTimeMinutetext)’\(intervalTimeSecondtext)"
+              intervalCount -= 1
+          }else if intervalCount == 0{
+              mainLabel.text = "インターバル終了"
+              mainTimerWork = true
+              intervalTimerWork = false
+              mainCount = inputMainTimerHour * 60 * 60
+              +  inputMainTimerMinute * 60
+              +  inputMainTimerSecond
+              countIntervalNumber += 1//インターバル回数をカウントする。
+          }
+      }
 
-    }
-    
-    private func setPickerViewUnitLabel() {
-        //「時間」のラベルを追加
-        let hStr = UILabel()
-        hStr.text = "時間"
-        hStr.sizeToFit()
-        hStr.frame = CGRect(x:pickerView.bounds.width/4 - hStr.bounds.width/2,
-                            y:pickerView.bounds.height/2 - (hStr.bounds.height/2),
-                            width:hStr.bounds.width, height:hStr.bounds.height)
-        pickerView.addSubview(hStr)
-        
-        //self.view.addSubview(pickerView)
-        
-        //「分」をラベルに追加
-        let mStr = UILabel()
-        mStr.text = "分"
-        mStr.sizeToFit()
-        mStr.frame = CGRect(x:pickerView.bounds.width/1.9 - mStr.bounds.width/2,
-                            y:pickerView.bounds.height/2 - (mStr.bounds.height/2),
-                            width:mStr.bounds.width, height:mStr.bounds.height)
-        pickerView.addSubview(mStr)
-        //self.view.addSubview(pickerView)
-        
-        //「秒」をラベルに追加
-        let sStr = UILabel()
-        sStr.text = "秒"
-        sStr.sizeToFit()
-        sStr.frame = CGRect(x:pickerView.bounds.width*17/20 - sStr.bounds.width/2,
-                            y:pickerView.bounds.height/2 - (sStr.bounds.height/2),
-                            width:sStr.bounds.width, height:sStr.bounds.height)
-        pickerView.addSubview(sStr)
-        //self.view.addSubview(pickerView)
-    }
-    
-    @objc func cancel() {
-        self.textField.text = ""
-        self.textField.endEditing(true)
-    }
-    
-    @objc func cancel2() {
-        self.textField2.text = ""
-        self.textField2.endEditing(true)
-    }
-    
-    @objc func done() {
-        self.textField.endEditing(true)
-        self.textField.text = String(datalist[0][pickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[0][pickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[0][pickerView.selectedRow(inComponent: 2)]) + "秒"
-        
-        timehour = datalist[0][pickerView.selectedRow(inComponent: 0)]
-        timeminute = datalist[0][pickerView.selectedRow(inComponent: 1)]
-        timesecond = datalist[0][pickerView.selectedRow(inComponent: 2)]
-        
-    }
-    
-    @objc func done2() {
-        self.textField2.endEditing(true)
-        self.textField2.text = String(datalist[0][pickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[0][pickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[0][pickerView.selectedRow(inComponent: 2)]) + "秒"
-        
-        timehour2 = datalist[0][pickerView.selectedRow(inComponent: 0)]
-        timeminute2 = datalist[0][pickerView.selectedRow(inComponent: 1)]
-        timesecond2 = datalist[0][pickerView.selectedRow(inComponent: 2)]
-              
-        
-    }
-    
-    func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
-        return CGRect(x: x, y: y, width: width, height: height)
-    }
-    
-    
+
 }

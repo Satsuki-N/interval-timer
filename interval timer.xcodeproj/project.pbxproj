@@ -14,7 +14,6 @@
 		00B71C3622BB9D9800A3BE0C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00B71C3422BB9D9800A3BE0C /* LaunchScreen.storyboard */; };
 		00B71C4122BB9D9800A3BE0C /* interval_timerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B71C4022BB9D9800A3BE0C /* interval_timerTests.swift */; };
 		00B71C4C22BB9D9800A3BE0C /* interval_timerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B71C4B22BB9D9800A3BE0C /* interval_timerUITests.swift */; };
-		00DAF27C22D6308100BF6AF3 /* 警告音.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 00DAF27B22D6308100BF6AF3 /* 警告音.mp3 */; };
 		00E96230232A5D5E00430EF1 /* pickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E9622F232A5D5E00430EF1 /* pickerViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,7 +48,6 @@
 		00B71C4722BB9D9800A3BE0C /* interval timerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "interval timerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00B71C4B22BB9D9800A3BE0C /* interval_timerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = interval_timerUITests.swift; sourceTree = "<group>"; };
 		00B71C4D22BB9D9800A3BE0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00DAF27B22D6308100BF6AF3 /* 警告音.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "警告音.mp3"; sourceTree = "<group>"; };
 		00E9622F232A5D5E00430EF1 /* pickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,7 +132,6 @@
 		00DAF27A22D6302D00BF6AF3 /* New Group */ = {
 			isa = PBXGroup;
 			children = (
-				00DAF27B22D6308100BF6AF3 /* 警告音.mp3 */,
 			);
 			path = "New Group";
 			sourceTree = "<group>";
@@ -243,7 +240,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00DAF27C22D6308100BF6AF3 /* 警告音.mp3 in Resources */,
 				00B71C3622BB9D9800A3BE0C /* LaunchScreen.storyboard in Resources */,
 				00B71C3322BB9D9800A3BE0C /* Assets.xcassets in Resources */,
 				00B71C3122BB9D9500A3BE0C /* Main.storyboard in Resources */,
