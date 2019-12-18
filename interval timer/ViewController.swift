@@ -98,7 +98,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
          let hStr = UILabel()
          hStr.text = "時間"
          hStr.sizeToFit()
-         hStr.frame = CGRect(x:timePickerView.bounds.width/4 - hStr.bounds.width/2,
+         hStr.frame = CGRect(x:timePickerView.bounds.width*5/13 - (hStr.bounds.width) - 20,
                              y:timePickerView.bounds.height/2 - (hStr.bounds.height/2),
                              width:hStr.bounds.width, height:hStr.bounds.height)
          timePickerView.addSubview(hStr)
@@ -109,7 +109,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
          let mStr = UILabel()
          mStr.text = "分"
          mStr.sizeToFit()
-         mStr.frame = CGRect(x:timePickerView.bounds.width/1.9 - mStr.bounds.width/2,
+         mStr.frame = CGRect(x:timePickerView.bounds.width*2/3 - (mStr.bounds.width) - 20,
                              y:timePickerView.bounds.height/2 - (mStr.bounds.height/2),
                              width:mStr.bounds.width, height:mStr.bounds.height)
          timePickerView.addSubview(mStr)
@@ -119,7 +119,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
          let sStr = UILabel()
          sStr.text = "秒"
          sStr.sizeToFit()
-         sStr.frame = CGRect(x:timePickerView.bounds.width*17/20 - sStr.bounds.width/2,
+         sStr.frame = CGRect(x:timePickerView.bounds.width - (sStr.bounds.width) - 20,
                              y:timePickerView.bounds.height/2 - (sStr.bounds.height/2),
                              width:sStr.bounds.width, height:sStr.bounds.height)
          timePickerView.addSubview(sStr)
