@@ -72,6 +72,9 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let data1 = self.pickerView(pickerView, titleForRow: pickerView.selectedRowInComponent(0), forComponent: 0)
+        }
         return datalist[component].count
     }
     
@@ -138,21 +141,21 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         
         @objc func done() {
             self.mainTimertextField.endEditing(true)
-            self.mainTimertextField.text = String(datalist[0][timePickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[0][timePickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[0][timePickerView.selectedRow(inComponent: 2)]) + "秒"
+            self.mainTimertextField.text = String(datalist[0][timePickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[1][timePickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[2][timePickerView.selectedRow(inComponent: 2)]) + "秒"
             
             inputMainTimerHour = datalist[0][timePickerView.selectedRow(inComponent: 0)]
-            inputMainTimerMinute = datalist[0][timePickerView.selectedRow(inComponent: 1)]
-            inputMainTimerSecond = datalist[0][timePickerView.selectedRow(inComponent: 2)]
+            inputMainTimerMinute = datalist[1][timePickerView.selectedRow(inComponent: 1)]
+            inputMainTimerSecond = datalist[2][timePickerView.selectedRow(inComponent: 2)]
     
         }
         
         @objc func done2() {
             self.intervalTimertextField.endEditing(true)
-            self.intervalTimertextField.text = String(datalist[0][timePickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[0][timePickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[0][timePickerView.selectedRow(inComponent: 2)]) + "秒"
+            self.intervalTimertextField.text = String(datalist[0][timePickerView.selectedRow(inComponent: 0)]) + "時間"+String(datalist[1][timePickerView.selectedRow(inComponent: 1)]) + "分"+String(datalist[2][timePickerView.selectedRow(inComponent: 2)]) + "秒"
             
             inputIntervalTimerHour = datalist[0][timePickerView.selectedRow(inComponent: 0)]
-            inputIntervalTimerMinute = datalist[0][timePickerView.selectedRow(inComponent: 1)]
-            inputIntervalTimerSecond = datalist[0][timePickerView.selectedRow(inComponent: 2)]
+            inputIntervalTimerMinute = datalist[1][timePickerView.selectedRow(inComponent: 1)]
+            inputIntervalTimerSecond = datalist[2][timePickerView.selectedRow(inComponent: 2)]
             
         }
     
@@ -197,6 +200,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         mainLabel.text = "リセットしました"
         mainTimerWork = false
         intervalTimerWork = false
+        timerStop = false
         timer.invalidate()
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2.0) {
             self.mainLabel.text = "0"
@@ -230,7 +234,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         if mainCount > 0{
                 remainingMainTimeHour = mainCount/3600
                 remainingMainTimeMinute = (mainCount - remainingMainTimeHour*3600)/60
-                remainingMainTimeSecond = mainCount - remainingMainTimeHour*3600 - remainingMainTimeHour*60
+                remainingMainTimeSecond = mainCount - remainingMainTimeHour*3600 - remainingMainTimeMinute*60
             let mainTimeHourtext = String(format: "%02d", remainingMainTimeHour)
             let mainTimeMinuteText = String(format: "%02d", remainingMainTimeMinute)
             let mainTimeSecondtext = String(format: "%02d", remainingMainTimeSecond)
@@ -279,3 +283,6 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
 
 
 }
+
+
+
